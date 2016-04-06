@@ -1,0 +1,57 @@
+﻿<Window x:Class="kimandtodd.GPX_Reader.ConfigDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DG-200 Configuration" Height="280" Width="500" ResizeMode="NoResize">
+    <Grid HorizontalAlignment="Left" Height="230" Margin="10,10,0,0" VerticalAlignment="Top" Width="480">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="116" />
+            <RowDefinition Height="116" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Data logging interval mode" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" 
+                  Height="96" Width="344">
+            <Grid HorizontalAlignment="Left" Height="70" Margin="5,5,0,0" VerticalAlignment="Top" Width="325">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                    <RowDefinition Height="35" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="82" />
+                    <ColumnDefinition Width="115" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <RadioButton Name="rdoUseTime" Content="By time:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                <RadioButton Name="rdoUseDist" Content="By distance:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBox Name="txtSecondsIntvl" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Height="25"
+                         TextWrapping="Wrap" Text=""  Width="100"/>
+                <TextBox Name="txtMetersIntvl" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Height="25"
+                         TextWrapping="Wrap" Text=""  Width="100"/>
+                <Label Content="seconds" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label Content="meters" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <Button Content="OK" HorizontalAlignment="Left" Height="27" Margin="368,25,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Height="27" Margin="368,70,0,0" VerticalAlignment="Top" Width="100"/>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="38" />
+                <RowDefinition Height="38" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <CheckBox Name="chkWaas" Content="Enable WAAS" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+            <CheckBox Name="chkAltitude" Content="Record altitude" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+            <CheckBox Name="chkSpeed" Content="Minimum speed for data recording (km/hr):" VerticalAlignment="Center" Grid.Row="1" 
+                      Grid.Column="0" Grid.ColumnSpan="2"/>
+            <CheckBox Name="chkDistance" Content="Minimum distance change for data recording (meters): " VerticalAlignment="Center" 
+                      Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"/>
+            <TextBox Name="txtMinSpeed" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"  
+                     TextWrapping="Wrap" Text=""  Width="100"/>
+            <TextBox Name="txtMinDistance" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Height="25"
+                     TextWrapping="Wrap" Text=""  Width="100"/>
+        </Grid>
+    </Grid>
+</Window>
