@@ -11,13 +11,14 @@ namespace kimandtodd.GPX_Reader
     public class TrackHeaderEntry
     {
 
-        public string Date
+        public string DateTimeString
         {
             get
             {
                 return this._firstHeaderDateTime.ToString(); // Need to decide on formatting. 
             }
         }
+
         public int TrackfileCount
         {
             get
@@ -25,7 +26,14 @@ namespace kimandtodd.GPX_Reader
                 return this._trackIds.Count;
             }
         }
-            
+
+        public DateTime DateTimeObject
+        {
+            get
+            {
+                return this._firstHeaderDateTime;
+            }
+        }            
 
         private HashSet<int> _trackIds;
         private DateTime _firstHeaderDateTime;
@@ -50,6 +58,11 @@ namespace kimandtodd.GPX_Reader
         public void addTrackId(int id)
         {
             this._trackIds.Add(id);
+        }
+
+        public ISet<int> getTrackIds()
+        {
+            return this._trackIds;
         }
     }
 }

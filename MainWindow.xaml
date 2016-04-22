@@ -31,12 +31,12 @@
                   Name="lvTracks" HorizontalAlignment="Left" SelectionChanged="HandleTrackHeaderSelection">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="Date (UTC)" Width="385" DisplayMemberBinding="{Binding Date}" />
+                    <GridViewColumn Header="Date (UTC)" Width="385" DisplayMemberBinding="{Binding DateTimeString}" />
                     <GridViewColumn Header="Trackfiles" Width="100" DisplayMemberBinding="{Binding TrackfileCount}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Name="btnDownload" Content="Download GPX" IsEnabled="False" HorizontalAlignment="Left" Margin="405,29,0,0" Grid.Row="1" 
+        <Button Name="btnDownload" Content="Download GPX" Click="btnDownload_Click" IsEnabled="False" HorizontalAlignment="Left" Margin="405,29,0,0" Grid.Row="1" 
                 VerticalAlignment="Top" Width="100"/>
         <Button Name="btnRefreshTrackHeaders" Click="refreshTrackHeaders_Click" Content="Refresh list" IsEnabled="False" 
                 HorizontalAlignment="Left" Margin="405,73,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100"/>

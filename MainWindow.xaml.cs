@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Forms;
 
 using kimandtodd.DG200CSharp;
 using kimandtodd.DG200CSharp.commands;
@@ -36,7 +26,7 @@ namespace kimandtodd.GPX_Reader
 
         // See http://stackoverflow.com/questions/8653897/how-to-addcombobox-items-dynamically-in-wpf 
         public ObservableCollection<ComboBoxItem> cbItems { get; set; }
-        public ObservableCollection<ListViewItem> TrackHeaders { get; set; }
+        public ObservableCollection<System.Windows.Controls.ListViewItem> TrackHeaders { get; set; }
         public ComboBoxItem SelectedcbItem { get; set; }
 
         public MainWindow()
@@ -46,9 +36,9 @@ namespace kimandtodd.GPX_Reader
 
             this._ports = new PortScanner();
 
-            initializeObservers();
+            this.initializeObservers();
 
-            populatePortList();
+            this.populatePortList();
         }
 
         private DG200SerialConnection getSerialConnection()
@@ -65,8 +55,9 @@ namespace kimandtodd.GPX_Reader
         private void MenuEdit_Click(object sender, RoutedEventArgs e)
         {
             this._cd = new ConfigDialog();
+            this._cd.setSerialConnection(this._dgSerialConnection);
             _cd.ShowInTaskbar = false;
-            _cd.Owner = Application.Current.MainWindow;
+            _cd.Owner = System.Windows.Application.Current.MainWindow;
             this.populateConfigDialog();
             _cd.ShowDialog();
         }
@@ -78,7 +69,7 @@ namespace kimandtodd.GPX_Reader
 
         private void MenuPorts_Click(object sender, RoutedEventArgs e)
         {
-
+            this.populatePortList();
         }
 
         private void MenuSave_Click(object sender, RoutedEventArgs e)
@@ -108,7 +99,7 @@ namespace kimandtodd.GPX_Reader
 
         private void AppExit_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            System.Windows.Application.Current.Shutdown();
         }
 
         private void refreshTrackHeaders_Click(object sender, RoutedEventArgs e)
@@ -118,7 +109,7 @@ namespace kimandtodd.GPX_Reader
 
         private void HandleTrackHeaderSelection(object sender, SelectionChangedEventArgs args)
         {
-            ListView lv = sender as ListView;
+            System.Windows.Controls.ListView lv = sender as System.Windows.Controls.ListView;
 
             if (lv.SelectedItems.Count > 0)
             {
@@ -132,7 +123,7 @@ namespace kimandtodd.GPX_Reader
 
         private void HandlePortNameSelection(object sender, SelectionChangedEventArgs args)
         {
-            ComboBox cb = sender as ComboBox;
+            System.Windows.Controls.ComboBox cb = sender as System.Windows.Controls.ComboBox;
 
             if (cb.SelectedIndex != 0)
             {
@@ -146,8 +137,10 @@ namespace kimandtodd.GPX_Reader
 
         private void populatePortList()
         {
+            cbItems.Clear();
+
             var cbItem = new ComboBoxItem { Content = "Not selected" };
-            SelectedcbItem = cbItem;
+            this.SelectedcbItem = cbItem;
             cbItems.Add(cbItem);            
 
             foreach (string p in this._ports.getPorts())
@@ -159,7 +152,7 @@ namespace kimandtodd.GPX_Reader
         private void initializeObservers()
         {
             cbItems = new ObservableCollection<ComboBoxItem>();
-            TrackHeaders = new ObservableCollection<ListViewItem>();
+            TrackHeaders = new ObservableCollection<System.Windows.Controls.ListViewItem>();
         }
 
         private void refreshTrackHeaders()
@@ -208,7 +201,7 @@ namespace kimandtodd.GPX_Reader
         {
             if (this._currentTrackHeaderEntry != null)
             {
-                this.TrackHeaders.Add(new ListViewItem { Content = this._currentTrackHeaderEntry });
+                this.TrackHeaders.Add(new System.Windows.Controls.ListViewItem { Content = this._currentTrackHeaderEntry });
             }
         }
 
@@ -223,6 +216,7 @@ namespace kimandtodd.GPX_Reader
 
                 GetDGConfigurationCommandResult cr = (GetDGConfigurationCommandResult)c.getLastResult();
                 this._dgConfig = cr.getConfiguration();
+                this.mnuConfig.IsEnabled = true;
 
                 this.refreshTrackHeaders();
             }
@@ -230,6 +224,51 @@ namespace kimandtodd.GPX_Reader
             {
                 this.lblStatus.Content = "Connection failed: " + ex.Message;
             }
+        }
+
+        private void btnDownload_Click(object sender, RoutedEventArgs e)
+        {
+            string filepath = this.openFileDialog();
+
+            if (filepath != "")
+            {
+                ISet<System.Windows.Controls.ListViewItem> headers = this.getSelectedTrackHeaders();
+                if (headers.Count == 0) { return; }
+
+                GpxSerializer s = new GpxSerializer();
+                s.setSerialConnection(this._dgSerialConnection);
+
+                foreach(System.Windows.Controls.ListViewItem sel in headers)
+                {
+                    TrackHeaderEntry the = sel.Content as TrackHeaderEntry;
+                    s.addTrackHeaderEntry(the);
+                }
+
+                s.setFilePath(filepath);
+
+                s.serialize();
+            }
+        }
+
+        private string openFileDialog()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "GPX files|*.gpx";
+            saveFileDialog1.Title = "Save the GPX data";
+            saveFileDialog1.ShowDialog();
+            return saveFileDialog1.FileName;
+        }
+
+        private ISet<System.Windows.Controls.ListViewItem> getSelectedTrackHeaders()
+        {
+            HashSet<System.Windows.Controls.ListViewItem> set = new HashSet<System.Windows.Controls.ListViewItem>();
+
+            foreach (System.Windows.Controls.ListViewItem sel in this.lvTracks.SelectedItems )
+            {
+                set.Add(sel);
+            }
+
+            return set;
         }
     }
 }
