@@ -7,6 +7,7 @@ using kimandtodd.DG200CSharp.commands;
 using kimandtodd.DG200CSharp.commands.exceptions;
 using kimandtodd.DG200CSharp.commandresults;
 using kimandtodd.DG200CSharp.commandresults.resultitems;
+using kimandtodd.DG200CSharp.logging;
 
 namespace kimandtodd.GPX_Reader
 {
@@ -71,32 +72,50 @@ namespace kimandtodd.GPX_Reader
                 "http://www.w3.org/2001/XMLSchema-instance",
                 "http://www.topografix.com/GPX/1/1  http://www.topografix.com/GPX/1/1/gpx.xsd");
 
-            foreach(TrackHeaderEntry the in this._trackHeaderEntries)
-            {
-                if (firstTrackHeaderTime=="")
-                {
-                    firstTrackHeaderTime = the.DateTimeString;
-                }
-
-                foreach(int tfId in the.getTrackIds())
-                {
-                    tfResults.Add(this.getTrackFile(tfId));
-                }
-            }
-
             wr.WriteStartElement("trk");
             wr.WriteElementString("name", firstTrackHeaderTime);
             wr.WriteElementString("src", "DG-200");
 
             wr.WriteStartElement("trkseg");
 
+            DG200FileLogger.Log("Starting loop through track header entries.", 3);
+
+            foreach(TrackHeaderEntry the in this._trackHeaderEntries)
+            {
+                DG200FileLogger.Log("Working on track header entry.", 3);
+                if (firstTrackHeaderTime=="")
+                {
+                    firstTrackHeaderTime = the.DateTimeString;
+                }
+
+                DG200FileLogger.Log("Going to do the retrieving. This many trackids expected: " + the.getTrackIds().Count, 3);
+                foreach(int tfId in the.getTrackIds())
+                {
+                    DG200FileLogger.Log("Starting on track id: " + tfId, 3);
+                    GetDGTrackFileCommandResult res = this.getTrackFile(tfId);
+
+                    DG200FileLogger.Log("Got a track file. Going to write the entries.", 3);
+
+                    foreach (IDGTrackPoint tp in res.getTrackPoints())
+                    {
+                        this.writeTrackPoint(tp, wr);
+                    }
+
+                    DG200FileLogger.Log("Done writing entries. Moving to the next track file.", 3);
+                }
+            }
+
+            
+
+            
+            /*
             foreach(GetDGTrackFileCommandResult res in tfResults)
             {
                 foreach(IDGTrackPoint tp in res.getTrackPoints())
                 {
                     this.writeTrackPoint(tp, wr);
                 }
-            }
+            }*/
 
             wr.WriteEndElement(); // trkseg
             wr.WriteEndElement(); // trk
@@ -157,10 +176,10 @@ namespace kimandtodd.GPX_Reader
             wr.WriteStartElement("trkpt");
 
             Tuple<Int16, Double> coord = tp.getLatitude();
-            wr.WriteAttributeString("lat", coord.Item1.ToString() + "." + coord.Item2.ToString());
+            wr.WriteAttributeString("lat", coord.Item1.ToString() + this.makeDecimalMinutes(coord.Item2));
 
             coord = tp.getLongitude();
-            wr.WriteAttributeString("lon", coord.Item1.ToString() + "." + coord.Item2.ToString());
+            wr.WriteAttributeString("lon", coord.Item1.ToString() + this.makeDecimalMinutes(coord.Item2));
 
             wr.WriteElementString("time", tp.getDateTime().ToString());
 
@@ -175,6 +194,11 @@ namespace kimandtodd.GPX_Reader
             }
 
             wr.WriteEndElement();
-        }        
+        }
+
+        private string makeDecimalMinutes(Double min)
+        {
+            return String.Format("{0:#.000000}", (min * 60) / 3600);
+        }
     }
 }
