@@ -8,6 +8,7 @@ using kimandtodd.DG200CSharp;
 using kimandtodd.DG200CSharp.commands;
 using kimandtodd.DG200CSharp.commandresults;
 using kimandtodd.DG200CSharp.commandresults.resultitems;
+using kimandtodd.DG200CSharp.logging;
 
 
 namespace kimandtodd.GPX_Reader
@@ -33,6 +34,8 @@ namespace kimandtodd.GPX_Reader
         {
             InitializeComponent();
             DataContext = this;
+
+            DG200FileLogger.setLevel(3);
 
             this._ports = new PortScanner();
 
