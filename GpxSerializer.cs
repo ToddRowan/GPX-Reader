@@ -164,13 +164,6 @@ namespace kimandtodd.GPX_Reader
 
         private void writeTrackPoint(IDGTrackPoint tp, XmlWriter wr)
         {
-            /*
-             * TODO: Add check if isValid is false.
-            <trkpt lat="48.045925" lon="-121.715811666667">
-			    <time>2015-05-31T18:54:51Z</time>
-			    <cmt>3.6km/h</cmt>
-			    <ele>120</ele> 
-		    </trkpt>*/
             int tpType = tp.getTrackFormat();
 
             wr.WriteStartElement("trkpt");
