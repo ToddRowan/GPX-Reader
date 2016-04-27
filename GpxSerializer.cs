@@ -98,7 +98,14 @@ namespace kimandtodd.GPX_Reader
 
                     foreach (IDGTrackPoint tp in res.getTrackPoints())
                     {
-                        this.writeTrackPoint(tp, wr);
+                        if (!tp.isWayPoint())
+                        {
+                            this.writeTrackPoint(tp, wr, "trkpt");
+                        }
+                        else
+                        {
+                            this._waypoints.Add(tp);
+                        }
                     }
 
                     DG200FileLogger.Log("Done writing entries. Moving to the next track file.", 3);
@@ -119,6 +126,9 @@ namespace kimandtodd.GPX_Reader
 
             wr.WriteEndElement(); // trkseg
             wr.WriteEndElement(); // trk
+
+            this.writeWayPoints(wr);
+
             wr.WriteEndElement(); // gpx
             
             
@@ -139,6 +149,14 @@ namespace kimandtodd.GPX_Reader
 
 
             return true;
+        }
+
+        private void writeWayPoints(XmlWriter wr)
+        {
+            foreach(IDGTrackPoint wp in this._waypoints)
+            {
+                this.writeTrackPoint(wp, wr, "wpt");
+            }
         }
 
         private GetDGTrackFileCommandResult getTrackFile(int tfId)
@@ -162,11 +180,11 @@ namespace kimandtodd.GPX_Reader
             return res;
         }
 
-        private void writeTrackPoint(IDGTrackPoint tp, XmlWriter wr)
+        private void writeTrackPoint(IDGTrackPoint tp, XmlWriter wr, String startElement)
         {
             int tpType = tp.getTrackFormat();
 
-            wr.WriteStartElement("trkpt");
+            wr.WriteStartElement(startElement);
 
             Tuple<Int16, Double> coord = tp.getLatitude();
             wr.WriteAttributeString("lat", coord.Item1.ToString() + this.makeDecimalMinutes(coord.Item2));
