@@ -192,7 +192,7 @@ namespace kimandtodd.GPX_Reader
             coord = tp.getLongitude();
             wr.WriteAttributeString("lon", coord.Item1.ToString() + this.makeDecimalMinutes(coord.Item2));
 
-            wr.WriteElementString("time", tp.getDateTime().ToString());
+            wr.WriteElementString("time", tp.getDateTime().ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
             if (tpType == BaseDGTrackPoint.FORMAT_POSITION_DATE_SPEED || tpType == BaseDGTrackPoint.FORMAT_POSITION_DATE_SPEED_ALTITUDE)
             {
