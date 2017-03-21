@@ -220,6 +220,7 @@ namespace kimandtodd.GPX_Reader
                 GetDGConfigurationCommandResult cr = (GetDGConfigurationCommandResult)c.getLastResult();
                 this._dgConfig = cr.getConfiguration();
                 this.mnuConfig.IsEnabled = true;
+                this.mnuErase.IsEnabled = true;
 
                 this.refreshTrackHeaders();
             }
