@@ -22,6 +22,7 @@ namespace kimandtodd.GPX_Reader
         private DG200Configuration _dgConfig;
         private DG200SerialConnection _dgSerialConnection;
         private ConfigDialog _cd;
+        private ProgressDialog _pd;
 
         private TrackHeaderEntry _currentTrackHeaderEntry;
 
@@ -84,6 +85,7 @@ namespace kimandtodd.GPX_Reader
         {            
             try
             {
+                // TODO: Add progress dialog here
                 DeleteAllDGTrackFilesCommand c = new DeleteAllDGTrackFilesCommand();
                 c.setSerialConnection(this.getSerialConnection());
 
@@ -162,6 +164,7 @@ namespace kimandtodd.GPX_Reader
         {
             try
             {
+                // TODO: Add progress dialog here
                 GetDGTrackHeadersCommand c = new GetDGTrackHeadersCommand();
                 c.setSerialConnection(this.getSerialConnection());
 
@@ -236,6 +239,7 @@ namespace kimandtodd.GPX_Reader
 
             if (filepath != "")
             {
+                // TODO: Add progress dialog here
                 ISet<System.Windows.Controls.ListViewItem> headers = this.getSelectedTrackHeaders();
                 if (headers.Count == 0) { return; }
 
