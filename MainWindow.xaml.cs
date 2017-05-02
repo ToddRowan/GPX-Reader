@@ -208,16 +208,21 @@ namespace kimandtodd.GPX_Reader
             }
         }
 
+        private GetDGConfigurationCommandResult getConfig()
+        {
+            GetDGConfigurationCommand c = new GetDGConfigurationCommand();
+            c.setSerialConnection(this.getSerialConnection());
+
+            c.execute();
+
+            return (GetDGConfigurationCommandResult)c.getLastResult();
+        }
+
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {            
             try
             {
-                GetDGConfigurationCommand c = new GetDGConfigurationCommand();
-                c.setSerialConnection(this.getSerialConnection());
-
-                c.execute();
-
-                GetDGConfigurationCommandResult cr = (GetDGConfigurationCommandResult)c.getLastResult();
+                GetDGConfigurationCommandResult cr = this.getConfig();
                 this._dgConfig = cr.getConfiguration();
                 this.mnuConfig.IsEnabled = true;
                 this.mnuErase.IsEnabled = true;
@@ -251,6 +256,9 @@ namespace kimandtodd.GPX_Reader
                 s.setFilePath(filepath);
 
                 s.serialize();
+
+                // We have to do this to get the green light to come back on. 
+                this.getConfig(); 
             }
         }
 
