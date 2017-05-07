@@ -172,6 +172,8 @@ namespace kimandtodd.GPX_Reader
 
                 GetDGTrackHeadersCommandResult cr = (GetDGTrackHeadersCommandResult)c.getLastResult();
 
+                this.TrackHeaders.Clear();
+
                 foreach (DGTrackHeader th in cr.getTrackHeaders())
                 {
                     if (!th.getIsValid())
